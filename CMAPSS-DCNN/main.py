@@ -4,6 +4,7 @@ from model import Model
 from model import weights_init
 from model import RMSELoss
 
+import matplotlib.pyplot as plt
 
 from utils import get_data
 from torch.utils.data import DataLoader, TensorDataset
@@ -113,7 +114,6 @@ pred = model.forward(x_test)
 #绘制预测值和真实值对比图
 pred = pred.cpu()
 y_test = y_test.cpu()
-import matplotlib.pyplot as plt
 plt.plot(pred.detach().numpy(), label='pred')
 plt.plot(y_test.detach().numpy(), label='true')
 plt.legend()

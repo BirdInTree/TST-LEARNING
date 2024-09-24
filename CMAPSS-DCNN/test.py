@@ -1,23 +1,13 @@
-import torch
-import torch.nn as nn
+import pandas as pd
 
-linear = nn.Linear(10,1)
-conv2d = nn.Conv2d(1,2,(3,3))
+a = [1,1,1,2,2,2,3,3,3,4,4,4]
+b= [3,2,1,4,3,2,5,4,3,6,5,4]
+c = [1,2,3,4,5,6,7,8,9,10,11,12]
 
-torch.manual_seed(1)
-print(linear.weight.data)
-print(f"初始化前的均值{linear.weight.data.mean()},标准差{linear.weight.data.std()}")
-
-#initial
-torch.nn.init.normal_(linear.weight.data, mean=0, std=0.01)
-print(linear.weight.data)
-print(f"初始化后的均值{linear.weight.data.mean()},标准差{linear.weight.data.std()}")
-
-#constant init
-print(conv2d.weight.data)
-torch.nn.init.constant_(conv2d.weight.data, 0.1)
-print(conv2d.weight.data)
-
-# 对conv进行kaiming初始化
-torch.nn.init.kaiming_normal_(conv2d.weight.data,mode='fan_in')
-print(conv2d.weight.data)
+data = {'unit':a, 'cycle':b, 'value':c}
+df = pd.DataFrame(data)
+group = df.groupby('unit')
+max_cycle = group['cycle'].max()
+print(max_cycle)
+result_frame = df.merge(max_cycle.to_frame(name='max_cycle'), left_on='unit', right_index=True)
+print(result_frame)
