@@ -1,13 +1,10 @@
-import torch
-import torch.nn as nn
-from model import Model
-from model import weights_init
-from model import RMSELoss
-
 import matplotlib.pyplot as plt
-
-from utils import get_data
+import numpy as np
+import torch
 from torch.utils.data import DataLoader, TensorDataset
+
+from model import Model, RMSELoss, weights_init
+from utils import get_data
 
 torch.manual_seed(42)
 # 检查是否有 GPU 可用
@@ -20,7 +17,7 @@ num_sensors = 14
 batch_size = 512
 dataset = 'FD001'
 sensors = ['s_2','s_3','s_4','s_7','s_8','s_9','s_11','s_12','s_13','s_14','s_15','s_17','s_20','s_21']
-x_train, y_train, x_val, y_val, x_test, y_test = get_data(dataset=dataset, sensors=sensors, sequence_length=seq_length, alpha=0.1, threshold=125)
+x_train, y_train, x_val, y_val, x_test, y_test, x_plot, y_plot = get_data(dataset=dataset, sensors=sensors, sequence_length=seq_length, alpha=0.1, threshold=125, scale_type='std-mean',random_state=42,plot_unit=np.array([2]))
 #shape x_train: 14241*30*14  y_train: 14241*1     x_val:(3490, 30, 14) x_test: (100, 30, 14)
 
 y_test = torch.tensor(y_test).to(device)
@@ -29,6 +26,8 @@ x_val = torch.tensor(x_val).unsqueeze(1).to(device)
 y_val = torch.tensor(y_val).to(device)
 x_train = torch.tensor(x_train).unsqueeze(1).to(device)
 y_train = torch.tensor(y_train).to(device)
+x_plot = torch.tensor(x_plot).unsqueeze(1).to(device)
+y_plot = torch.tensor(y_plot).to(device)
 
 
 #构造数据集，使用dataloader读取批量数据
@@ -47,11 +46,12 @@ def evaluate(model, x, y):
         return loss.item()
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=200, gamma=0.1)
 
 start_epoch = 0
 # 恢复训练进度，如果需要
 def load_checkpoint(save_path):
-    checkpoint = torch.load(save_path)
+    checkpoint = torch.load(save_path,weights_only=True)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     start_epoch = checkpoint['epoch']
@@ -89,6 +89,7 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
                     'loss': loss.item(),  # 假设有当前 epoch 的损失值
                 }
                 torch.save(checkpoint, save_path)
+        scheduler.step()
     ##保存最终模型文件
     checkpoint = {
         'epoch': epoch + 1,  # epoch+1 表示下一次从这个 epoch 开始
@@ -100,11 +101,11 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
 
 
 
-train(model, optimizer, train_loader, x_val, y_val, num_epochs=500)
+# train(model, optimizer, train_loader, x_val, y_val, num_epochs=500)
 
 #测试集上的损失
  
-# start_epoch, loss = load_checkpoint("checkpoint.pth")
+start_epoch, loss = load_checkpoint("checkpoint.pth")
 model.eval()
 y_test = y_test.view(100,1)
 test_loss = evaluate(model, x_test, y_test)
@@ -119,3 +120,16 @@ plt.plot(y_test.detach().numpy(), label='true')
 plt.legend()
 #保存预测值和真实值对比图
 plt.savefig('pred_true.png')
+#关闭第一次绘图窗口
+plt.close()
+
+#构造数据集，用于绘图对比
+outs = model.forward(x_plot)
+outs = outs.cpu()
+y_plot = y_plot.cpu()
+
+plt.plot(outs.detach().numpy(), label='pred')
+plt.plot(y_plot.detach().numpy(), label='actual_life')
+plt.legend()
+plt.savefig('pred_true2.png')
+

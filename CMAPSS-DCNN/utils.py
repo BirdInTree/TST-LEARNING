@@ -295,12 +295,14 @@ if __name__ == "__main__":
     squence_length = 30
     alpha = 0.1
     threshold = 125
-    x_train, y_train, x_val, y_val, x_test, y_test, x_test_plot, y_test_plot = get_data(
+    x_train, y_train, x_val, y_val, x_test, y_test, x_plot, y_plot = get_data(
         "FD001", sensors, squence_length, alpha, threshold, plot_unit=np.array([2])
     )
     #(258, 30, 5) (258, 1)
     #绘制训练数据的RUL曲线 y_train_plot
-    print(y_test_plot)
-    x = np.arange(1,y_test_plot.shape[0]+1)
-    plt.plot(x, y_test_plot[:,0], label="train_rul")
-    plt.show()
+    # print(y_test_plot)
+    # x = np.arange(1,y_test_plot.shape[0]+1)
+    # plt.plot(x, y_test_plot[:,0], label="train_rul")
+    # plt.show()
+
+    print(x_train.shape,x_plot.shape)
