@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
-from model import Model, RMSELoss, weights_init
+from model import Model, RMSELoss, weights_init, score
 from utils import get_data
 
 torch.manual_seed(42)
@@ -43,7 +43,8 @@ def evaluate(model, x, y):
     with torch.no_grad():
         y_pred = model(x)
         loss = loss_func(y_pred, y).to(device)
-        return loss.item()
+        s = score(y_pred, y)
+        return loss.item(), s
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=200, gamma=0.1)
@@ -76,8 +77,8 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
             loss.backward()
             optimizer.step()
         #caculate val_loss
-        val_loss = evaluate(model, x_val, y_val)
-        print(f"Epoch {epoch+1}: train loss: {loss.item():.4f}, val loss: {val_loss:.4f}")
+        val_loss, s = evaluate(model, x_val, y_val)
+        print(f"Epoch {epoch+1}: train loss: {loss.item():.4f}, val loss: {val_loss:.4f}, score: {s:.4f}")
         if epoch % 5 == 0:
             if best_val_loss is None or val_loss < best_val_loss:
                 best_val_loss = val_loss
@@ -101,15 +102,15 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
 
 
 
-train(model, optimizer, train_loader, x_val, y_val, num_epochs=500)
+train(model, optimizer, train_loader, x_val, y_val, num_epochs=250)
 
 #测试集上的损失
  
 # start_epoch, loss = load_checkpoint("checkpoint.pth")
 model.eval()
 y_test = y_test.view(100,1)
-test_loss = evaluate(model, x_test, y_test)
-print(f"Test loss: {test_loss:.4f}")
+test_loss, s = evaluate(model, x_test, y_test)
+print(f"Test loss: {test_loss:.4f}, Test score: {s:.4f}")
 pred = model.forward(x_test)
 
 #绘制预测值和真实值对比图
@@ -122,6 +123,8 @@ plt.legend()
 plt.savefig('pred_true.png')
 #关闭第一次绘图窗口
 plt.close()
+
+
 
 #构造数据集，用于绘图对比
 outs = model.forward(x_plot)

@@ -1,13 +1,16 @@
-import pandas as pd
+import torch
+import math
+torch.manual_seed(0)
+pred = torch.randint(0, 10, (100,1))
+true = torch.randint(0, 10, (100,1))
 
-a = [1,1,1,2,2,2,3,3,3,4,4,4]
-b= [3,2,1,4,3,2,5,4,3,6,5,4]
-c = [1,2,3,4,5,6,7,8,9,10,11,12]
+print(pred[1])
+print(true[1])
 
-data = {'unit':a, 'cycle':b, 'value':c}
-df = pd.DataFrame(data)
-group = df.groupby('unit')
-max_cycle = group['cycle'].max()
-print(max_cycle)
-result_frame = df.merge(max_cycle.to_frame(name='max_cycle'), left_on='unit', right_index=True)
-print(result_frame)
+def score(y_pred, y_true):
+    ds = y_pred - y_true
+    results = sum([ (torch.exp(-d/13)-1).item()  if d < 0 else (torch.exp(d/10)-1).item() for d in ds])
+    return results
+
+score= score(pred, true)
+print(score,type(score))

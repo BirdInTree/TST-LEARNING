@@ -108,6 +108,11 @@ class RMSELoss(torch.nn.Module):
     def forward(self, pred, actual):
         return torch.sqrt(self.mse(pred, actual))
 
+#得分函数
+def score(y_pred, y_true):
+    ds = y_pred - y_true
+    results = sum([ (torch.exp(-d/13)-1).item()  if d < 0 else (torch.exp(d/10)-1).item() for d in ds])
+    return results
 
 if __name__ == "__main__":
     torch.manual_seed(1)
