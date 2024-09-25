@@ -73,31 +73,31 @@ class Model(nn.Module):
 
 
 # initialize weights
-# def weights_init(layer):
-#     if isinstance(layer, torch.nn.Conv2d):
-#         torch.nn.init.xavier_normal_(layer.weight, gain=5.0 / 3)
-#         if layer.bias is not None:
-#             layer.bias.data.fill_(0.01)
-
-#     elif isinstance(layer, torch.nn.Linear):
-#         torch.nn.init.xavier_normal_(layer.weight, gain=5.0 / 3)
-#         if layer.bias is not None:
-#             layer.bias.data.fill_(0.001)
-
-#     return None
-
 def weights_init(layer):
     if isinstance(layer, torch.nn.Conv2d):
-        torch.nn.init.kaiming_normal_(layer.weight, mode = 'fan_out')
+        torch.nn.init.xavier_normal_(layer.weight, gain=5.0 / 3)
         if layer.bias is not None:
             layer.bias.data.fill_(0.01)
-    
+
     elif isinstance(layer, torch.nn.Linear):
-        torch.nn.init.kaiming_normal_(layer.weight, mode = 'fan_out')
+        torch.nn.init.xavier_normal_(layer.weight, gain=5.0 / 3)
         if layer.bias is not None:
             layer.bias.data.fill_(0.001)
-            
+
     return None
+
+# def weights_init(layer):
+#     if isinstance(layer, torch.nn.Conv2d):
+#         torch.nn.init.kaiming_normal_(layer.weight, mode = 'fan_out')
+#         if layer.bias is not None:
+#             layer.bias.data.fill_(0.01)
+    
+#     elif isinstance(layer, torch.nn.Linear):
+#         torch.nn.init.kaiming_normal_(layer.weight, mode = 'fan_out')
+#         if layer.bias is not None:
+#             layer.bias.data.fill_(0.001)
+            
+#     return None
 
 # loss function
 class RMSELoss(torch.nn.Module):
