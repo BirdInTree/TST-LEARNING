@@ -101,11 +101,11 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
 
 
 
-# train(model, optimizer, train_loader, x_val, y_val, num_epochs=500)
+train(model, optimizer, train_loader, x_val, y_val, num_epochs=500)
 
 #测试集上的损失
  
-start_epoch, loss = load_checkpoint("checkpoint.pth")
+# start_epoch, loss = load_checkpoint("checkpoint.pth")
 model.eval()
 y_test = y_test.view(100,1)
 test_loss = evaluate(model, x_test, y_test)
