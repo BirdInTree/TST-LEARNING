@@ -25,7 +25,7 @@ F_L2 = 3
 batch_size = 512
 dataset = 'FD001'
 sensors = ['s_2','s_3','s_4','s_7','s_8','s_9','s_11','s_12','s_13','s_14','s_15','s_17','s_20','s_21']
-x_train, y_train, x_val, y_val, x_test, y_test, x_plot, y_plot = get_data(dataset=dataset, sensors=sensors, sequence_length=seq_length, alpha=0.1, threshold=125, scale_type='std-mean',random_state=42,plot_unit=np.array([2]))
+x_train, y_train, x_val, y_val, x_test, y_test, x_plot, y_plot = get_data(dataset=dataset, sensors=sensors, sequence_length=seq_length, alpha=None, threshold=125, scale_type='max-min', random_state=42, plot_unit=np.array([2]))
 #shape x_train: 14241*30*14  y_train: 14241*1     x_val:(3490, 30, 14) x_test: (100, 30, 14)
 
 y_test = torch.tensor(y_test).to(device)

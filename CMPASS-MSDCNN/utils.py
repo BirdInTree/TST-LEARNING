@@ -98,6 +98,34 @@ def condition_scaler(df_train, df_test, sensor_names, scale_type: str = "std-mea
         pass
     return df_train, df_test
 
+def scale_data(df_train, df_test, sensor_names, scale_type: str = "max-min"):
+    # 对每个传感器分别进行标准化
+    if scale_type == "std-mean":
+        # 1. 计算训练集的均值和标准差（只在训练集上计算）
+        mean = df_train[sensor_names].mean()
+        std = df_train[sensor_names].std()
+
+        # 2. 防止除以零的情况，如果标准差为0，则设为1（因为该特征的值都是常数）
+        std.replace(0, 1.0, inplace=True)
+
+        # 3. 对训练集和测试集进行标准化
+        df_train[sensor_names] = (df_train[sensor_names] - mean) / std
+        df_test[sensor_names] = (df_test[sensor_names] - mean) / std
+    elif scale_type == "max-min":
+        # 1. 计算训练集的最大值和最小值（只在训练集上计算）
+        max_value = df_train[sensor_names].max()
+        min_value = df_train[sensor_names].min()
+
+        # 2. 对训练集和测试集进行最大最小化，将其范围缩放到-1到1之间
+        df_train[sensor_names] = 2*(df_train[sensor_names] - min_value) / (
+            max_value - min_value 
+        ) - 1.0
+        df_test[sensor_names] = (df_test[sensor_names] - min_value) / (
+            max_value - min_value
+        ) - 1.0
+    else:
+        pass
+    return df_train, df_test
 
 def exponential_smoothing(df, sensors, n_samples, alpha=0.4):
     df = df.copy()
@@ -235,10 +263,13 @@ def get_data(
     # remove unused sensors
     drop_sensors = [element for element in sensor_names if element not in sensors]
     # scale with respect to the operating condition
-    X_train_pre = add_operating_condition(train.drop(drop_sensors, axis=1))
-    X_test_pre = add_operating_condition(test.drop(drop_sensors, axis=1))
-    X_train_pre, X_test_pre = condition_scaler(
-        X_train_pre, X_test_pre, sensors, scale_type
+    # X_train_pre = add_operating_condition(train.drop(drop_sensors, axis=1))
+    # X_test_pre = add_operating_condition(test.drop(drop_sensors, axis=1))
+    # X_train_pre, X_test_pre = condition_scaler(
+    #     X_train_pre, X_test_pre, sensors, scale_type
+    # )
+    X_train_pre, X_test_pre = scale_data(
+        train.drop(drop_sensors, axis=1), test.drop(drop_sensors, axis=1), sensors, scale_type
     )
     if alpha is not None:
     #exponential smoothing
@@ -296,7 +327,7 @@ if __name__ == "__main__":
     alpha = 0.1
     threshold = 125
     x_train, y_train, x_val, y_val, x_test, y_test, x_plot, y_plot = get_data(
-        "FD001", sensors, squence_length, alpha, threshold, plot_unit=np.array([2])
+        "FD001", sensors, squence_length, alpha=None, threshold = threshold, scale_type = "max-min", random_state=42, plot_unit=np.array([2])
     )
     #(258, 30, 5) (258, 1)
     #绘制训练数据的RUL曲线 y_train_plot
@@ -305,4 +336,4 @@ if __name__ == "__main__":
     # plt.plot(x, y_test_plot[:,0], label="train_rul")
     # plt.show()
 
-    print(x_train.shape,x_plot.shape)
+    print(x_train.shape,x_train[0])
