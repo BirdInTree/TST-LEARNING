@@ -74,8 +74,9 @@ class Model(nn.Module):
             stride=1,
             padding='same',
         )
-        self.fc = nn.Linear(self.seq_length * self.num_sensors, 1)
+        self.fc = nn.Linear(self.seq_length * self.num_sensors, 64)
         self.dropout = nn.Dropout(0.5,inplace=False)
+        self.fc_out = nn.Linear(64, 1)
 
     def forward(self, x):
         x = self.tanh(self.msblock1(x))
@@ -86,6 +87,7 @@ class Model(nn.Module):
         x = x.view(x.size(0), -1)   #flatten
         x = self.fc(x)
         x = self.dropout(x)
+        x = self.fc_out(x)
         return x
 
 # initialize weights

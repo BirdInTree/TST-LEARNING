@@ -55,8 +55,8 @@ def evaluate(model, x, y):
         return loss.item(), s
 
 # optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-optimizer = get_optimizer(model, lr=0.0001,weight_decay=0.01)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=200, gamma=0.1)
+optimizer = get_optimizer(model, lr=0.001,weight_decay=0.0001)
+# scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=200, gamma=0.1)
 
 start_epoch = 0
 # 恢复训练进度，如果需要
@@ -100,7 +100,7 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
                     'loss': loss.item(),  # 假设有当前 epoch 的损失值
                 }
                 torch.save(checkpoint, save_path)
-        scheduler.step()
+        # scheduler.step()
     ##保存最终模型文件
     checkpoint = {
         'epoch': epoch + 1,  # epoch+1 表示下一次从这个 epoch 开始
@@ -112,7 +112,7 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
 
 
 
-train(model, optimizer, train_loader, x_val, y_val, num_epochs=250)
+train(model, optimizer, train_loader, x_val, y_val, num_epochs=180)
 
 #测试集上的损失
  
