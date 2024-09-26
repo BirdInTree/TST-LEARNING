@@ -38,7 +38,7 @@ class Model(nn.Module):
             stride=1,
             padding="same",
         )
-        # output shape (batch_size, hidden_size, seq_len, 5)
+        # output shape (batch_size, hidden_size, seq_len, num_sensors)
 
         self.conv5 = nn.Conv2d(
             in_channels=self.hidden_size,
@@ -51,7 +51,7 @@ class Model(nn.Module):
         self.fc1 = nn.Linear(self.seq_length * self.num_sensors, 100)
 
         dropout_rate = 0.5
-        self.dropout = nn.Dropout(dropout_rate)
+        self.dropout = nn.Dropout(dropout_rate, inplace=False)
 
         self.fc2 = nn.Linear(100, 1)
 
@@ -61,13 +61,14 @@ class Model(nn.Module):
         x = self.tanh(self.conv3(x))
         x = self.tanh(self.conv4(x))
         x = self.tanh(self.conv5(x))
-        x = self.dropout(x)
+        # x = self.dropout(x)
         x = x.squeeze(1)
         x = x.view(
             -1, self.seq_length * self.num_sensors
         )  # flatten the output of the last conv layer
         x = self.fc1(x)
         x = self.tanh(x)
+        x = self.dropout(x)
         x = self.fc2(x)
         return x
 

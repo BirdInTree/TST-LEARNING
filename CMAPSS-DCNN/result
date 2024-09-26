@@ -4,7 +4,15 @@
 
 20240921 11:18修改了模型初始化方式为xavier
 500 epoches Test loss: 13.7697      65 epoch 开始恢复训练 12.6183
+
 20240925 9:37 增加了动态修改学习率,前200为0.001,后面200-250为0.0001
-250 epoches Test loss: 13.1405      66 epoch 开始恢复训练 12.6184
+Epoch 250: Test loss: 13.1405      66 epoch 开始恢复训练 12.6184
+
 20240925 10:05 用kaiming_normal初始化方式代替xavier
-250 epoches Test loss: 13.8240      131 epoch 开始恢复训练 13.4771
+Epoch 250: Test loss: 13.8240      131 epoch 开始恢复训练 13.4771
+
+20240925 10:45 恢复xavier初始化,添加得分函数
+Epoch 250: Test loss: 13.1403, Test score: 321.6267        66 epoch 开始恢复训练 Test loss: 12.6183, Test score: 292.0972
+
+20240925 16:11 更改随机种子为114514
+Epoch 250: Test loss: 13.8034, Test score: 354.1694        从第 66 个 epoch 开始恢复训练 Test loss: 14.0255, Test score: 406.3397
