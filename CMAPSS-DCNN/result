@@ -16,3 +16,6 @@ Epoch 250: Test loss: 13.1403, Test score: 321.6267        66 epoch 开始恢复
 
 20240925 16:11 更改随机种子为114514
 Epoch 250: Test loss: 13.8034, Test score: 354.1694        从第 66 个 epoch 开始恢复训练 Test loss: 14.0255, Test score: 406.3397
+
+20240926 8:52 更改dropout位置
+Epoch 250: Test loss: 13.7739, Test score: 357.1793        从第 136 个 epoch 开始恢复训练 Test loss: 13.5564, Test score: 344.3004

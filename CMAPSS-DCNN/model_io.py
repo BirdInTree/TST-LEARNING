@@ -35,7 +35,7 @@ def load_model(model, optimizer, filepath):
     - epoch: 恢复的 epoch
     - loss: 恢复的损失值
     """
-    checkpoint = torch.load(filepath)
+    checkpoint = torch.load(filepath,weights_only=True)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     epoch = checkpoint['epoch']
