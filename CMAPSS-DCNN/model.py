@@ -43,7 +43,6 @@ class Model(nn.Module):
             out_channels=1,
             kernel_size=[3, 1],
             stride=1,
-            padding="same",
         )
 
         self.fc1 = nn.Linear(self.seq_length * self.num_sensors, 100)
