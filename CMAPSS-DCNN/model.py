@@ -53,7 +53,6 @@ class Model(nn.Module):
         self.fc2 = nn.Linear(100, 1)
 
     def forward(self, x):
-        x = self.pad10(x)
         x = self.tanh(self.conv1(x))
         x = self.pad10(x)
         x = self.tanh(self.conv2(x))
@@ -61,16 +60,17 @@ class Model(nn.Module):
         x = self.tanh(self.conv3(x))
         x = self.pad10(x)
         x = self.tanh(self.conv4(x))
-        x = self.pad2(x)
+        x = self.pad10(x)
         x = self.tanh(self.conv5(x))
-        # x = self.dropout(x)
+        x = self.pad2(x)
+        x = self.dropout(x)
         x = x.squeeze(1)
         x = x.view(
             -1, self.seq_length * self.num_sensors
         )  # flatten the output of the last conv layer
         x = self.fc1(x)
         x = self.tanh(x)
-        x = self.dropout(x)
+        # x = self.dropout(x)
         x = self.fc2(x)
         return x
 

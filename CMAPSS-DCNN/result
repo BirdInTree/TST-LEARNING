@@ -19,3 +19,6 @@ Epoch 250: Test loss: 13.8034, Test score: 354.1694        从第 66 个 epoch �
 
 20240926 8:52 更改dropout位置
 Epoch 250: Test loss: 13.7739, Test score: 357.1793        从第 136 个 epoch 开始恢复训练 Test loss: 13.5564, Test score: 344.3004
+
+2024/10/09 23:14 更改padding方式为末尾填充0，结果挺好，注意dropout层位于最后一个卷积层后，全连接层之前，同时取消了动态学习率（这个不重要）
+从第 56 个 epoch 开始恢复训练 Test loss: 12.4744, Test score: 268.8517
