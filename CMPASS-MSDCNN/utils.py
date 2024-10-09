@@ -115,7 +115,7 @@ def scale_data(df_train, df_test, sensor_names, scale_type: str = "max-min"):
         # 1. 计算训练集的最大值和最小值（只在训练集上计算）
         max_value = df_train[sensor_names].max()
         min_value = df_train[sensor_names].min()
-
+        print(f"max_value: {max_value},min_value: {min_value}")
         # 2. 对训练集和测试集进行最大最小化，将其范围缩放到-1到1之间
         df_train[sensor_names] = 2*(df_train[sensor_names] - min_value) / (
             max_value - min_value 

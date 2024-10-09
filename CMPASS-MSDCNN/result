@@ -2,3 +2,26 @@
 2024-0926
 Epoch 180: Test loss: 13.7561, Test score: 263.5072
 Epoch 115: Test loss: 13.7170, Test score: 290.9318
+
+
+2024-0927 10:05
+Epoch 180: Test loss: 13.7330, Test score: 266.1824
+Epoch 135: Test loss: 13.5175, Test score: 287.5408
+
+超参数:
+kernel_length = 11
+hidden_size = 10
+seq_length = 30
+num_sensors = 14
+kernel_length_1 = 10
+kernel_length_2 = 15
+kernel_length_3 = 20
+hidden_size = 10
+F_N = 10
+F_L1 = 10
+F_L2 = 3
+batch_size = 512
+alpha=0.1, threshold=125, scale_type='std-mean', random_state=42, plot_unit=np.array([2])
+optimizer = get_optimizer(model, lr=0.001,weight_decay=0.0001)
+
+主要修改:将双层fc改成单层,提升显著

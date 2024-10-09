@@ -10,33 +10,31 @@ class Model(nn.Module):
         self.hidden_size = hidden_size
         self.kernal_length = kernel_length
         self.tanh = nn.Tanh()
+        self.pad10 = nn.ZeroPad2d((0,0,10,0))
+        self.pad2 = nn.ZeroPad2d((0,0,2,0))
         self.conv1 = nn.Conv2d(
             in_channels=1,
             out_channels=self.hidden_size,
             kernel_size=[self.kernal_length, 1],
             stride=1,
-            padding="same",
         )
         self.conv2 = nn.Conv2d(
             in_channels=self.hidden_size,
             out_channels=self.hidden_size,
             kernel_size=[self.kernal_length, 1],
             stride=1,
-            padding="same",
         )
         self.conv3 = nn.Conv2d(
             in_channels=self.hidden_size,
             out_channels=self.hidden_size,
             kernel_size=[self.kernal_length, 1],
             stride=1,
-            padding="same",
         )
         self.conv4 = nn.Conv2d(
             in_channels=self.hidden_size,
             out_channels=self.hidden_size,
             kernel_size=[self.kernal_length, 1],
             stride=1,
-            padding="same",
         )
         # output shape (batch_size, hidden_size, seq_len, num_sensors)
 
@@ -56,10 +54,15 @@ class Model(nn.Module):
         self.fc2 = nn.Linear(100, 1)
 
     def forward(self, x):
+        x = self.pad10(x)
         x = self.tanh(self.conv1(x))
+        x = self.pad10(x)
         x = self.tanh(self.conv2(x))
+        x = self.pad10(x)
         x = self.tanh(self.conv3(x))
+        x = self.pad10(x)
         x = self.tanh(self.conv4(x))
+        x = self.pad2(x)
         x = self.tanh(self.conv5(x))
         # x = self.dropout(x)
         x = x.squeeze(1)
