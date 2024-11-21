@@ -142,7 +142,6 @@ def train(model, optimizer, train_loader, x_val, y_val, num_epochs=100):
             x_batch = x_batch.to(device)
             y_batch = y_batch.to(device)
             optimizer.zero_grad()
-            print("x_batch:",x_batch.shape)
             y_pred = model(x_batch)
             loss = loss_func(y_pred, y_batch).to(device)
             loss.backward()
